@@ -486,18 +486,17 @@ class Lmer(object):
         self.logLike = R2numpy(unsum.rx2("logLik"))[0]
 
         # First check for lme4 printed messages (e.g. convergence info is usually here instead of in warnings)
-        fit_messages = unsum.rx2("optinfo").rx2("conv").rx2("lme4").rx2("messages")
+        try:
+            fit_messages = [fm for fm in unsum.rx2("optinfo").rx2("conv").rx2("lme4").rx2("messages")]
+        except (TypeError, AttributeError):
+            fit_messages = []
+
         # Then check warnings for additional stuff
         fit_warnings = unsum.rx2("optinfo").rx2("warnings")
-
         try:
             fit_warnings = [fw for fw in fit_warnings]
         except TypeError:
             fit_warnings = []
-        try:
-            fit_messages = [fm for fm in fit_messages]
-        except TypeError:
-            fit_messages = []
 
         fit_messages_warnings = fit_warnings + fit_messages
         if fit_messages_warnings:
