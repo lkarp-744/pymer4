@@ -1226,7 +1226,11 @@ class Lmer(object):
                     )
             else:
                 raise ValueError("marginal_vars are not in model!")
-
+        
+        if verbose:
+            print("Calling emmeans with:")
+            print(rstring)
+        
         func = robjects.r(rstring)
         res = func(self.model_obj)
         emmeans = importr("emmeans")
